@@ -1,0 +1,131 @@
+from tool import Ui_Mainwindow
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QFileSystemModel, QPlainTextEdit, QVBoxLayout, QHBoxLayout, QLineEdit, QLabel
+
+
+class ToolMainWindow(Ui_Mainwindow):
+    def __init__(self):
+        super().__init__()
+
+    def setupUi(self, Mainwindow):
+        super().setupUi(Mainwindow)
+        
+        # 创建主布局
+        main_layout = QVBoxLayout(self.centralwidget)
+        
+        # 在treeView上方添加一些空间
+        # main_layout.addSpacing(20)  # 添加20像素的空间
+        
+        # 设置文件系统模型
+        self.model = QFileSystemModel()
+        self.model.setRootPath('')  # 设置为根目录
+        self.treeView.setModel(self.model)
+        self.treeView.setRootIndex(self.model.index(''))  # 设置根索引为根目录
+        self.treeView.setAutoScroll(True)  # 启用自动滚动
+        
+        # 将treeView添加到布局，设置拉伸因子为3（占更多空间）
+        main_layout.addWidget(self.treeView, 1)
+        
+        # 添加输入框区域
+        input_layout = QVBoxLayout()
+        
+        # 第一行：查找文本
+        search_layout = QHBoxLayout()
+        search_label = QLabel("选中的文件夹:")
+        self.searchLineEdit = QLineEdit()
+        self.searchLineEdit.setPlaceholderText("选择想要的文件夹...")
+        search_layout.addWidget(search_label)
+        search_layout.addWidget(self.searchLineEdit)
+        input_layout.addLayout(search_layout)
+        
+        # 第二行：替换文本
+        replace_layout = QHBoxLayout()
+        replace_label = QLabel("替换为:")
+        self.replaceLineEdit = QLineEdit()
+        self.replaceLineEdit.setPlaceholderText("输入替换后的文本...")
+        replace_layout.addWidget(replace_label)
+        replace_layout.addWidget(self.replaceLineEdit)
+        input_layout.addLayout(replace_layout)
+        
+        # 第三行：前缀/后缀
+        prefix_layout = QHBoxLayout()
+        prefix_label = QLabel("添加前缀:")
+        self.prefixLineEdit = QLineEdit()
+        self.prefixLineEdit.setPlaceholderText("在文件名前添加...")
+        suffix_label = QLabel("添加后缀:")
+        self.suffixLineEdit = QLineEdit()
+        self.suffixLineEdit.setPlaceholderText("在文件名后添加...")
+        prefix_layout.addWidget(prefix_label)
+        prefix_layout.addWidget(self.prefixLineEdit)
+        prefix_layout.addWidget(suffix_label)
+        prefix_layout.addWidget(self.suffixLineEdit)
+        input_layout.addLayout(prefix_layout)
+        
+        # 将输入框布局添加到主布局
+        main_layout.addLayout(input_layout)
+        
+        # 创建按钮的水平布局
+        button_layout = QHBoxLayout()
+        button_layout.addWidget(self.pushButton)
+        button_layout.addStretch()  # 添加弹性空间，让按钮靠左
+        
+        # 将按钮布局添加到主布局
+        main_layout.addLayout(button_layout)
+        
+        # 添加日志输出窗口
+        self.logTextEdit = QPlainTextEdit(self.centralwidget)
+        self.logTextEdit.setObjectName("logTextEdit")
+        self.logTextEdit.setReadOnly(True)  # 设置为只读
+        
+        # 将日志窗口添加到布局，设置拉伸因子为1（占较少空间）
+        main_layout.addWidget(self.logTextEdit, 1)
+        
+        # 设置布局的边距
+        main_layout.setContentsMargins(10, 10, 10, 10)
+        main_layout.setSpacing(5)
+
+        # self.pushButton.clicked.connect(self.get_selected_path)
+        self.treeView.clicked.connect(self.get_selected_path)
+        
+        # 添加欢迎日志
+        self.log_message("应用程序已启动")
+    
+    def log_message(self, message):
+        """添加日志消息到日志窗口"""
+        import datetime
+        timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        log_entry = f"[{timestamp}] {message}"
+        self.logTextEdit.appendPlainText(log_entry)
+        
+        # 自动滚动到底部
+        scrollbar = self.logTextEdit.verticalScrollBar()
+        scrollbar.setValue(scrollbar.maximum())
+
+    def get_selected_path(self):
+        index = self.treeView.currentIndex()
+        if index.isValid():
+            path = self.model.filePath(index)
+            
+            # 判断是否是文件夹
+            if self.model.isDir(index):
+                self.log_message(f"选中文件夹: {path}")
+                self.searchLineEdit.setText(path)
+            else:
+                self.log_message("未选中文件夹")
+                self.searchLineEdit.setText("")
+        else:
+            self.log_message("未选中任何文件或文件夹")
+            self.searchLineEdit.setText("")
+
+    def change_file_name(self, file_path, new_name):
+        """Change the file name to the new name."""
+        self.log_message(f"尝试将文件 {file_path} 重命名为 {new_name}")
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    Mainwindow = QtWidgets.QMainWindow()
+    ui = ToolMainWindow()
+    ui.setupUi(Mainwindow)
+    Mainwindow.show()
+    sys.exit(app.exec_())
