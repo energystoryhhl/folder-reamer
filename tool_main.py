@@ -1,7 +1,9 @@
 from tool import Ui_Mainwindow
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QFileSystemModel, QPlainTextEdit, QVBoxLayout, QHBoxLayout, QLineEdit, QLabel
+import os
 
+import rename_worker
 
 class ToolMainWindow(Ui_Mainwindow):
     def __init__(self):
@@ -84,7 +86,7 @@ class ToolMainWindow(Ui_Mainwindow):
         main_layout.setContentsMargins(10, 10, 10, 10)
         main_layout.setSpacing(5)
 
-        # self.pushButton.clicked.connect(self.get_selected_path)
+        self.pushButton.clicked.connect(self.start_conversion)
         self.treeView.clicked.connect(self.get_selected_path)
         
         # 添加欢迎日志
@@ -100,6 +102,23 @@ class ToolMainWindow(Ui_Mainwindow):
         # 自动滚动到底部
         scrollbar = self.logTextEdit.verticalScrollBar()
         scrollbar.setValue(scrollbar.maximum())
+
+    def start_conversion(self):
+        """开始转换操作"""
+        directly_text = self.searchLineEdit.text()
+        # self.log_message(f"开始转换操作，选中的文件夹: {directly_text}")
+        if not directly_text:
+            self.log_message("未选中文件夹，无法进行转换操作")
+            return
+        if not os.path.isdir(directly_text):
+            self.log_message(f"选中的路径不是一个有效的文件夹: {directly_text}")
+            return
+
+        if rename_worker.has_sub_dir(directly_text):
+            self.log_message(f"选中的文件夹 {directly_text} 包含两重子文件夹，开始转换...")
+            # 在这里添加转换逻辑
+            # 例如：rename_worker.rename_files_in_directory(directly_text, self.replaceLineEdit.text(), self.prefixLineEdit.text(), self.suffixLineEdit.text())
+
 
     def get_selected_path(self):
         index = self.treeView.currentIndex()
