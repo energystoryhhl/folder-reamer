@@ -5,6 +5,8 @@ import os
 
 import rename_worker
 
+PRE_REGULAR = "(.+)-(.+)-(.+)"
+PRE_REPLACE_RULE = "【常规】(MATCH2)-(DIR3)-(MATCH1)-(DIR1)-(ORDER)-(MATCH3)"
 class ToolMainWindow(Ui_Mainwindow):
     def __init__(self):
         super().__init__()
@@ -54,13 +56,13 @@ class ToolMainWindow(Ui_Mainwindow):
         prefix_label = QLabel("二级目录文件名替换规则:")
         self.prefixLineEdit = QLineEdit()
         self.prefixLineEdit.setPlaceholderText("输入替换规则...")
-        suffix_label = QLabel("添加后缀:")
-        self.suffixLineEdit = QLineEdit()
-        self.suffixLineEdit.setPlaceholderText("在文件名后添加...")
+        # suffix_label = QLabel("添加后缀:")
+        # self.suffixLineEdit = QLineEdit()
+        # self.suffixLineEdit.setPlaceholderText("在文件名后添加...")
         prefix_layout.addWidget(prefix_label)
         prefix_layout.addWidget(self.prefixLineEdit)
-        prefix_layout.addWidget(suffix_label)
-        prefix_layout.addWidget(self.suffixLineEdit)
+        # prefix_layout.addWidget(suffix_label)
+        # prefix_layout.addWidget(self.suffixLineEdit)
         input_layout.addLayout(prefix_layout)
         
         # 将输入框布局添加到主布局
@@ -117,8 +119,6 @@ class ToolMainWindow(Ui_Mainwindow):
         if rename_worker.has_sub_dir(directly_text):
             self.log_message(f"选中的文件夹 {directly_text} 包含两重子文件夹，开始转换...")
             # 在这里添加转换逻辑
-            # 例如：rename_worker.rename_files_in_directory(directly_text, self.replaceLineEdit.text(), self.prefixLineEdit.text(), self.suffixLineEdit.text())
-
 
     def get_selected_path(self):
         index = self.treeView.currentIndex()
@@ -140,11 +140,16 @@ class ToolMainWindow(Ui_Mainwindow):
         """Change the file name to the new name."""
         self.log_message(f"尝试将文件 {file_path} 重命名为 {new_name}")
 
+    def setupPreConfig(self):
+        self.replaceLineEdit.setText(PRE_REGULAR)
+        self.prefixLineEdit.setText(PRE_REPLACE_RULE)
+
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
     Mainwindow = QtWidgets.QMainWindow()
     ui = ToolMainWindow()
     ui.setupUi(Mainwindow)
+    ui.setupPreConfig()
     Mainwindow.show()
     sys.exit(app.exec_())
