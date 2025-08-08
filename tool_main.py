@@ -19,11 +19,14 @@ class ToolMainWindow(Ui_Mainwindow):
         # self.work_thread = threading.Thread(target=self.rename_worker_thread)
         self.work_items = dict()  # 用于存储工作项
         self.work_status = False  # 用于标记工作状态
+        self.work_target_types = []
 
     def rename_files(self):
         directly_text = self.work_items["directly_text"]
         replace_rule = self.work_items["replace_rule"]
         prefix_rule = self.work_items["prefix_rule"]
+        filetype_filter = self.work_items["filetype_filter"]
+
         total_files = 0
 
         for dir in self.work_items["dirs"]:
@@ -62,6 +65,10 @@ class ToolMainWindow(Ui_Mainwindow):
                 new_name = new_name.replace(f"({ORDER_REGULAR})", str(order))
 
                 new_name += extension  # 添加文件扩展名
+                if filetype_filter:
+                    if extension[1:] not in filetype_filter:
+                        self.log_message(f"文件 {filename} 的扩展名 {extension} 不在过滤列表中，跳过重命名")
+                        continue
 
                 self.log_message(f"尝试将文件 {filename} -> {new_name}")
                 if not rename_worker.change_file_name(filename, new_name):
@@ -132,6 +139,13 @@ class ToolMainWindow(Ui_Mainwindow):
         replace_layout.addWidget(replace_label)
         replace_layout.addWidget(self.replaceLineEdit)
         input_layout.addLayout(replace_layout)
+        # 第三行：文件类型选择
+        filetype_label = QLabel("文件类型过滤:")
+        self.filetypeLineEdit = QLineEdit()
+        self.filetypeLineEdit.setPlaceholderText("如: txt|jpg|png, 多个用|分隔")
+        replace_layout.addWidget(filetype_label)
+        replace_layout.addWidget(self.filetypeLineEdit)
+        self.filetypeLineEdit.setText("mp4|mkv|avi")  # 默认设置为常见视频格式
         
         # 第三行：前缀/后缀
         prefix_layout = QHBoxLayout()
@@ -212,6 +226,7 @@ class ToolMainWindow(Ui_Mainwindow):
         self.work_items["directly_text"] = directly_text
         self.work_items["replace_rule"] = self.replaceLineEdit.text()
         self.work_items["prefix_rule"] = self.prefixLineEdit.text()
+        self.work_items["filetype_filter"] = self.filetypeLineEdit.text().split('|')
 
         # self.work_thread.start()  # 启动工作线程
 
