@@ -2,6 +2,7 @@ from tool import Ui_Mainwindow
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QFileSystemModel, QPlainTextEdit, QVBoxLayout, QHBoxLayout, QLineEdit, QLabel
 import os
+import threading
 
 import rename_worker
 
@@ -116,9 +117,16 @@ class ToolMainWindow(Ui_Mainwindow):
             self.log_message(f"选中的路径不是一个有效的文件夹: {directly_text}")
             return
 
-        if rename_worker.has_sub_dir(directly_text):
-            self.log_message(f"选中的文件夹 {directly_text} 包含两重子文件夹，开始转换...")
-            # 在这里添加转换逻辑
+        if not rename_worker.has_sub_dir(directly_text):
+            self.log_message(f"选中的文件夹 {directly_text} 不包含两重子文件夹，无法进行转换操作")
+            return
+
+        self.log_message(f"选中的文件夹 {directly_text} 包含两重子文件夹，开始转换...")
+
+        dirs, error_text = rename_worker.has_sub_dir_with_details(directly_text)
+        if error_text:
+            self.log_message(error_text)
+            return
 
     def get_selected_path(self):
         index = self.treeView.currentIndex()
