@@ -69,6 +69,11 @@ class ToolMainWindow(Ui_Mainwindow):
                     if extension[1:] not in filetype_filter:
                         self.log_message(f"文件 {filename} 的扩展名 {extension} 不在过滤列表中，跳过重命名")
                         continue
+                
+                # WA:
+                # 特殊处理：如果 dir3 是 "文件", "美化包", "三角洲"，则替换规则中的【常规】为【非】
+                if dir3 in ["文件", "美化包", "三角洲"]:
+                    new_name = new_name.replace("【常规】", "【非】")
 
                 self.log_message(f"尝试将文件 {filename} -> {new_name}")
                 if not rename_worker.change_file_name(filename, new_name):
