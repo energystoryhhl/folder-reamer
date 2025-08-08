@@ -42,18 +42,18 @@ class ToolMainWindow(Ui_Mainwindow):
         
         # 第二行：替换文本
         replace_layout = QHBoxLayout()
-        replace_label = QLabel("替换为:")
+        replace_label = QLabel("一级目录正则:")
         self.replaceLineEdit = QLineEdit()
-        self.replaceLineEdit.setPlaceholderText("输入替换后的文本...")
+        self.replaceLineEdit.setPlaceholderText("输入一级目录文件夹匹配正则...")
         replace_layout.addWidget(replace_label)
         replace_layout.addWidget(self.replaceLineEdit)
         input_layout.addLayout(replace_layout)
         
         # 第三行：前缀/后缀
         prefix_layout = QHBoxLayout()
-        prefix_label = QLabel("添加前缀:")
+        prefix_label = QLabel("二级目录文件名替换规则:")
         self.prefixLineEdit = QLineEdit()
-        self.prefixLineEdit.setPlaceholderText("在文件名前添加...")
+        self.prefixLineEdit.setPlaceholderText("输入替换规则...")
         suffix_label = QLabel("添加后缀:")
         self.suffixLineEdit = QLineEdit()
         self.suffixLineEdit.setPlaceholderText("在文件名后添加...")
