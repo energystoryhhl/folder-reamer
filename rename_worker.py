@@ -1,5 +1,6 @@
 import sys
 import os
+import re
 
 def change_file_name(file_path, new_name):
     """Change the file name to the new name."""
@@ -89,5 +90,16 @@ def has_sub_dir_with_details(path):
         return False, []
 
 
+def regular_check(regular: str, input_text: str):
+    result = re.match(regular, input_text)
+    if result:
+        return result.groups()
+
+    return ()
+
 if __name__ == "__main__":
-    print("This script is not meant to be run directly.")
+    text = "路遥"
+    regular = r"(.+)-(.+)-(.+)"
+    match = regular_check(regular, text)
+    print(match)
+    print(len(match))
