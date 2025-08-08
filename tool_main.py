@@ -72,7 +72,7 @@ class ToolMainWindow(Ui_Mainwindow):
                 
                 # WA:
                 # 特殊处理：如果 dir3 是 "文件", "美化包", "三角洲"，则替换规则中的【常规】为【非】
-                if dir3 in ["文件", "美化包", "三角洲"]:
+                if dir3 in ["文件", "美化包", "三角洲", "吃鸡"]:
                     new_name = new_name.replace("【常规】", "【非】")
 
                 self.log_message(f"尝试将文件 {filename} -> {new_name}")
