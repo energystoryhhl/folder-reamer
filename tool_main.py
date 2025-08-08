@@ -62,7 +62,7 @@ class ToolMainWindow(Ui_Mainwindow):
                 for i in range(0, len(matches)):
                     new_name = new_name.replace(f"({MATCH_REGULAR}{i+1})", matches[i])
 
-                new_name = new_name.replace(f"({ORDER_REGULAR})", str(order))
+                new_name = new_name.replace(f"({ORDER_REGULAR})", f"{total_files:03d}")  # 使用四位数格式化订单号
 
                 new_name += extension  # 添加文件扩展名
                 if filetype_filter:
