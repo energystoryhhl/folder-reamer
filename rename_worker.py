@@ -12,10 +12,10 @@ def change_file_name(file_path, new_name):
     new_file_path = os.path.join(directory, new_name)
     try:
         os.rename(file_path, new_file_path)
-        print(f"File renamed to {new_file_path}")
+        # print(f"File renamed to {new_file_path}")
         return True
     except Exception as e:
-        print(f"Error renaming file: {e}")
+        # print(f"Error renaming file: {e}")
         return False
 
 def has_sub_dir(path):
@@ -99,16 +99,44 @@ def regular_check(regular: str, input_text: str):
 
     return ()
 
+def get_last_three_dirs(path):
+    """
+    获取路径的最后三级目录名称
+    :param path: 文件路径或目录路径
+    :return: 包含最后三级目录名的元组 (第三级, 第二级, 第一级)
+    """
+    norm_path = os.path.normpath(path)
+    parts = [p for p in norm_path.split(os.sep) if p]
+    
+    if len(parts) < 3:
+        return tuple(parts[::-1])
+    return tuple(parts[-3:][::-1])
+
+def get_all_filenames(directory):
+    """
+    获取指定目录下所有文件名
+    :param directory: 目录路径
+    :return: 文件名列表
+    """
+    filenames = []
+    for root, dirs, files in os.walk(directory):
+        for file in files:
+            filenames.append(os.path.join(root, file))
+    return filenames
+
 if __name__ == "__main__":
     # text = "路遥"
     # regular = r"(.+)-(.+)-(.+)"
     # match = regular_check(regular, text)
     # print(match)
     # print(len(match))
-    path = r"C:\work\04_doc\personal\pycodes\250806"
+    path = r"C:\work\04_doc\personal\pycodes\250806\路遥-视频-ljy\唱歌跳舞"
     
-    dir3_list, error_text = has_sub_dir_with_details(path)
-    if error_text != "":
-        print(error_text)
-    else:
-        print(f"三级目录: {dir3_list}")
+    # dir3_list, error_text = has_sub_dir_with_details(path)
+    # if error_text != "":
+    #     print(error_text)
+    # else:
+    #     print(f"三级目录: {dir3_list}")
+
+    filenames = get_all_filenames(path)
+    print(filenames)
