@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Mainwindow(object):
     def setupUi(self, Mainwindow):
         Mainwindow.setObjectName("Mainwindow")
-        Mainwindow.resize(800, 600)
+        Mainwindow.resize(1200, 1000)
         self.centralwidget = QtWidgets.QWidget(Mainwindow)
         self.centralwidget.setObjectName("centralwidget")
         self.pushButton = QtWidgets.QPushButton(self.centralwidget)

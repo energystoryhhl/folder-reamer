@@ -178,7 +178,7 @@ class ToolMainWindow(Ui_Mainwindow):
         self.logTextEdit.setReadOnly(True)  # 设置为只读
         
         # 将日志窗口添加到布局，设置拉伸因子为1（占较少空间）
-        main_layout.addWidget(self.logTextEdit, 1)
+        main_layout.addWidget(self.logTextEdit, 2)
         
         # 设置布局的边距
         main_layout.setContentsMargins(10, 10, 10, 10)
