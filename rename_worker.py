@@ -26,7 +26,7 @@ def has_sub_dir(path):
         path (str): 要检查的文件夹路径
     
     Returns:
-        bool: 如果有两重子文件夹返回True，否则返回False
+        bool: 如果有两重子文件夹返回True, 否则返回False
     """
     if not os.path.exists(path) or not os.path.isdir(path):
         print(f"路径 {path} 不存在或不是文件夹")
@@ -58,37 +58,39 @@ def has_sub_dir(path):
 
 
 def has_sub_dir_with_details(path):
-    """
-    检查指定路径下是否有两重子文件夹，并返回详细信息
+    # dir1_list = []
+    # dir2_list = []
+    dir3_list = []
+    error_text = ""
     
-    Args:
-        path (str): 要检查的文件夹路径
-    
-    Returns:
-        tuple: (bool, list) - (是否有两重子文件夹, 两重子文件夹路径列表)
-    """
+    # 检查路径是否存在且是文件夹
     if not os.path.exists(path) or not os.path.isdir(path):
-        return False, []
+        return dir3_list, "路径不存在或不是文件夹"
     
-    two_level_dirs = []
-    
+    # dir1_list.append(path)
+
     try:
         for item1 in os.listdir(path):
             item1_path = os.path.join(path, item1)
+            # if os.path.isdir(item1_path):
+            #     dir2_list.append(item1_path)
             
             if os.path.isdir(item1_path):
                 for item2 in os.listdir(item1_path):
                     item2_path = os.path.join(item1_path, item2)
                     
                     if os.path.isdir(item2_path):
-                        two_level_dirs.append(item2_path)
+                        dir3_list.append(item2_path)
         
-        return len(two_level_dirs) > 0, two_level_dirs
+        return dir3_list, error_text
+        
+    except PermissionError:
+        error_text = f"没有权限访问路径 {path}"
         
     except Exception as e:
-        print(f"检查路径时出错: {e}")
-        return False, []
+        error_text = f"检查路径时出错: {e}"
 
+    return dir3_list, error_text
 
 def regular_check(regular: str, input_text: str):
     result = re.match(regular, input_text)
@@ -98,8 +100,15 @@ def regular_check(regular: str, input_text: str):
     return ()
 
 if __name__ == "__main__":
-    text = "路遥"
-    regular = r"(.+)-(.+)-(.+)"
-    match = regular_check(regular, text)
-    print(match)
-    print(len(match))
+    # text = "路遥"
+    # regular = r"(.+)-(.+)-(.+)"
+    # match = regular_check(regular, text)
+    # print(match)
+    # print(len(match))
+    path = r"C:\work\04_doc\personal\pycodes\250806"
+    
+    dir3_list, error_text = has_sub_dir_with_details(path)
+    if error_text != "":
+        print(error_text)
+    else:
+        print(f"三级目录: {dir3_list}")
