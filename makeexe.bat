@@ -1,0 +1,1 @@
+pyinstaller  --windowed  --onefile .\tool_main.py

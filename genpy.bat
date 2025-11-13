@@ -1,0 +1,1 @@
+pyuic5 -x .\tool.ui -o tool.py
